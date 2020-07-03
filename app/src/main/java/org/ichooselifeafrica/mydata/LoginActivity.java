@@ -1,11 +1,13 @@
 package org.ichooselifeafrica.mydata;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -39,6 +41,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
+        View z = this.getCurrentFocus();
+        if (z != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(z.getWindowToken(), 0);
+        }
         String email = inputEmail.getText().toString().trim();
         String password = inputPassword.getText().toString().trim();
         if (email.isEmpty()|| password.isEmpty()){

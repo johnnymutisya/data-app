@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:label="Login"
             android:name=".LoginActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -21,14 +22,16 @@
             </intent-filter>
         </activity>
         <activity
+            android:label="New Agent"
             android:name=".YouthInSchoolActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:label="Questions"
             android:name=".QuestionnaireActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ReportsActivity"
-            android:label="@string/title_activity_reports"
+            android:label="Reports"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

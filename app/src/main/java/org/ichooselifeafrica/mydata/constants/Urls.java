@@ -7,4 +7,5 @@ public class Urls {
     public static String SUBMIT_QUESTIONS_INFO_URL=BASE_URL+"submit/questions/info";
     public static String FETCH_QUESTIONS_INFO_URL=BASE_URL+"fetch/questions";
     public static String FETCH_USER_INFO_URL=BASE_URL+"fetch/user/info";
+    public static String FETCH_USER_REPORTS_URL=BASE_URL+"get/user/reports";
 }

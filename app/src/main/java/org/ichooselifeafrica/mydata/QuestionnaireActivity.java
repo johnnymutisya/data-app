@@ -1,6 +1,7 @@
 package org.ichooselifeafrica.mydata;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.TextInputLayout;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioGroup;
@@ -42,11 +44,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
     int youth_id;
     String name;
 
-    TextInputLayout textInputLayoutSchool,textInputLayoutForm,layoutHighestLevel,layoutHighestLevelYear;
-    TextView txtMaritalStatus;
-    RadioGroup radioGroupMaritalStatus,radioGroupSchooling;
 
-    String maritalStatus="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +59,6 @@ public class QuestionnaireActivity extends AppCompatActivity {
         txtCounty = findViewById(R.id.txtCounty);
         txtWard = findViewById(R.id.txtWard);
 
-        textInputLayoutSchool=findViewById(R.id.textInputLayoutSchool);
-        textInputLayoutForm=findViewById(R.id.textInputLayoutForm);
-        layoutHighestLevel=findViewById(R.id.layoutHighestLevel);
-        layoutHighestLevelYear=findViewById(R.id.layoutHighestLevelYear);
-
-        txtMaritalStatus=findViewById(R.id.layoutHighestLevelYear);
-
-        radioGroupMaritalStatus=findViewById(R.id.layoutHighestLevelYear);
-        radioGroupSchooling=findViewById(R.id.radioGroupSchooling);
 
 
 
@@ -78,38 +67,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         this.progress = new ProgressDialog(this);
         progress.setMessage("Processing....");
 
-        radioGroupSchooling.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                if (checkedId==R.id.radioInSchool){
-                    layoutHighestLevel.setVisibility(View.GONE);
-                    layoutHighestLevelYear.setVisibility(View.GONE);
-                    txtMaritalStatus.setVisibility(View.GONE);
-                    radioGroupMaritalStatus.setVisibility(View.GONE);
-                    //show others
-                }else{
-                    //vice versa
 
-
-                }
-
-            }
-        });
-
-        radioGroupMaritalStatus.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                if (checkedId==R.id.radioMarried){
-                    maritalStatus="Married";
-                }
-                else if (checkedId==R.id.radioSingle){
-                    maritalStatus="Single";
-                }
-                else if (checkedId==R.id.radioDivorced){
-                    maritalStatus="Separated";
-                }
-            }
-        });
     }
 
     public void fetchQuestions() {
@@ -143,6 +101,12 @@ public class QuestionnaireActivity extends AppCompatActivity {
     String TAG = "SERVER_SAYS";
 
     public void submitQuestions() {
+        //close keyboard
+        View z = this.getCurrentFocus();
+        if (z != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(z.getWindowToken(), 0);
+        }
         RequestParams params = new RequestParams();
         Gson gson = new Gson();
         String data = gson.toJson(customAdapter.getSelectedAnswers());
@@ -196,6 +160,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
     }
 
     public void searchAgent(View view) {
+        View z = this.getCurrentFocus();
+        if (z != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(z.getWindowToken(), 0);
+        }
         String agentNo = inputAgentNumber.getText().toString().trim();
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
@@ -208,7 +177,6 @@ public class QuestionnaireActivity extends AppCompatActivity {
                 progress.dismiss();
                 try {
                     if (response.getBoolean("success")) {
-                        //txtSchool, txtCounty, txtWard, txtSubCounty
                         name = response.getJSONObject("message").getString("names");
                         youth_id = response.getJSONObject("message").getInt("id");
 

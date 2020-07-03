@@ -1,6 +1,7 @@
 package org.ichooselifeafrica.mydata.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,11 @@ public class CustomAdapter extends BaseAdapter {
         RadioGroup rg = view.findViewById(R.id.rg);
 
         final Question question = questionsList.get(i);
+
+        radioYes.setChecked(question.firstAnswerChecked);
+        radioNo.setChecked(question.secondAnswerChecked);
+        radioNotAware.setChecked(question.thirdAnswerChecked);
+
         if (question.getAnswers() == 2) {
             radioNotAware.setVisibility(View.INVISIBLE);
         }
@@ -62,21 +68,30 @@ public class CustomAdapter extends BaseAdapter {
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                for (Response p:selectedAnswers) {
-                    if (p.getQuestion_id()==question.getId()){
-                        selectedAnswers.remove(p);
+                try {
+                    for (Response p : selectedAnswers) {
+                        if (p.getQuestion_id() == question.getId()) {
+                            selectedAnswers.remove(p);
+                        }
                     }
+                    int value = 0;
+                    int question_id = question.getId();
+                    if (checkedId == R.id.radioYes) {
+                        value = 1;
+                        question.firstAnswerChecked=true;
+                    } else if (checkedId == R.id.radioNo) {
+                        question.secondAnswerChecked=true;
+                        value = 2;
+                    } else if (checkedId == R.id.radioNotAware) {
+                        question.thirdAnswerChecked=true;
+                        value = 3;
+                    }
+                    selectedAnswers.add(new Response(question_id, value));
+                }catch (Exception e){
+                    Log.d("ERROR", "onCheckedChanged: Error doig concurrent modification");
                 }
-                int value=0;
-                int question_id=question.getId();
-                if (checkedId == R.id.radioYes) {
-                   value=1;
-                } else if (checkedId == R.id.radioNo) {
-                   value=2;
-                } else if (checkedId == R.id.radioNotAware) {
-                    value=3;
-                }
-                selectedAnswers.add(new Response(question_id,value));
+
+
             }
         });
         return view;

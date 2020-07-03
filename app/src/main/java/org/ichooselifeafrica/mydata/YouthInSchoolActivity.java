@@ -1,12 +1,16 @@
 package org.ichooselifeafrica.mydata;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -22,10 +26,17 @@ import cz.msebera.android.httpclient.Header;
 
 public class YouthInSchoolActivity extends AppCompatActivity {
 
-    EditText inputNames, inputAgentNo, inputAge, inputWard, inputSubCounty, inputCounty, inputSchool, inputForm;
+    EditText inputNames, inputAgentNo, inputAge, inputWard, inputSubCounty, inputCounty, inputSchool, inputForm,inputEduLevel,inputEduLevelCompletion;
     RadioGroup rgGender, rgReligion;
     String gender, religion;
     ProgressDialog progress;
+
+    TextInputLayout textInputLayoutSchool, textInputLayoutForm, layoutHighestLevel, layoutHighestLevelYear;
+    TextView txtMaritalStatus;
+    RadioGroup radioGroupMaritalStatus, radioGroupSchooling;
+
+    String maritalStatus = "";
+    boolean inSchool = true;
 
 
     @Override
@@ -40,6 +51,59 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         inputCounty = findViewById(R.id.inputCounty);
         inputSchool = findViewById(R.id.inputSchool);
         inputForm = findViewById(R.id.inputForm);
+        inputEduLevel=findViewById(R.id.inputEduLevel);
+        inputEduLevelCompletion=findViewById(R.id.inputEduLevelCompletion);
+
+        textInputLayoutSchool = findViewById(R.id.textInputLayoutSchool);
+        textInputLayoutForm = findViewById(R.id.textInputLayoutForm);
+        layoutHighestLevel = findViewById(R.id.layoutHighestLevel);
+        layoutHighestLevelYear = findViewById(R.id.layoutHighestLevelYear);
+
+        txtMaritalStatus = findViewById(R.id.txtMaritalStatus);
+
+        radioGroupMaritalStatus = findViewById(R.id.radioGroupMaritalStatus);
+        radioGroupSchooling = findViewById(R.id.radioGroupSchooling);
+
+
+        radioGroupSchooling.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                if (checkedId == R.id.radioInSchool) {
+                    inSchool = true;
+                    layoutHighestLevel.setVisibility(View.GONE);
+                    layoutHighestLevelYear.setVisibility(View.GONE);
+                    txtMaritalStatus.setVisibility(View.GONE);
+                    radioGroupMaritalStatus.setVisibility(View.GONE);
+                    //show others
+                    inputSchool.setVisibility(View.VISIBLE);
+                    inputForm.setVisibility(View.VISIBLE);
+                } else {
+                    inSchool = false;
+                    //vice versa
+                    inputSchool.setVisibility(View.GONE);
+                    inputForm.setVisibility(View.GONE);
+
+                    layoutHighestLevel.setVisibility(View.VISIBLE);
+                    layoutHighestLevelYear.setVisibility(View.VISIBLE);
+                    txtMaritalStatus.setVisibility(View.VISIBLE);
+                    radioGroupMaritalStatus.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
+        radioGroupMaritalStatus.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                if (checkedId == R.id.radioMarried) {
+                    maritalStatus = "Married";
+                } else if (checkedId == R.id.radioSingle) {
+                    maritalStatus = "Single";
+                } else if (checkedId == R.id.radioDivorced) {
+                    maritalStatus = "Separated";
+                }
+            }
+        });
 
         rgGender = findViewById(R.id.radioGroup);
         rgReligion = findViewById(R.id.radioGroup2);
@@ -74,6 +138,11 @@ public class YouthInSchoolActivity extends AppCompatActivity {
     }
 
     public void submitInfo(View view) {
+        View z = this.getCurrentFocus();
+        if (z != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(z.getWindowToken(), 0);
+        }
         //inputNames, inputAgentNo, inputAge, inputWard, inputSubCounty, inputCounty, inputSchool, inputForm
         String names = inputNames.getText().toString().trim();
         String agent_no = inputAgentNo.getText().toString().trim();
@@ -81,10 +150,15 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         String ward = inputWard.getText().toString().trim();
         String sub_county = inputSubCounty.getText().toString().trim();
         String county = inputCounty.getText().toString().trim();
-        String school = inputSchool.getText().toString().trim();
-        String form = inputForm.getText().toString().trim();
+        String school = inSchool ? inputSchool.getText().toString().trim() : "N/A";
+        String form = inSchool ? inputForm.getText().toString().trim() : "N/A";
+        maritalStatus = inSchool ? "N/A" : maritalStatus;
+        //inputEduLevel,inputEduLevelCompletion
+        String highestLevel = inSchool ? "N/A":inputEduLevel.getText().toString().trim();
+        String yearCompletion = inSchool ? "N/A":inputEduLevelCompletion.getText().toString().trim();
 
-        if (names.isEmpty() || agent_no.isEmpty() || age.isEmpty() || ward.isEmpty() || sub_county.isEmpty() || county.isEmpty() || school.isEmpty() || form.isEmpty()) {
+
+        if (highestLevel.isEmpty()||yearCompletion.isEmpty()|| names.isEmpty() || agent_no.isEmpty() || age.isEmpty() || ward.isEmpty() || sub_county.isEmpty() || county.isEmpty() || school.isEmpty() || form.isEmpty()) {
             Toast.makeText(this, "Fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -100,6 +174,9 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         params.put("form", form);
         params.put("gender", gender);
         params.put("religion", religion);
+        params.put("marital_status", maritalStatus);
+        params.put("highest_level", highestLevel);
+        params.put("year_completion", yearCompletion);
         AsyncHttpClient client = new AsyncHttpClient();
         this.progress.show();
         client.post(Urls.SUBMIT_USER_INFO_URL, params, new JsonHttpResponseHandler() {
@@ -108,10 +185,10 @@ public class YouthInSchoolActivity extends AppCompatActivity {
                 super.onSuccess(statusCode, headers, response);
                 progress.dismiss();
                 try {
-                    if (response.getBoolean("success")){
+                    if (response.getBoolean("success")) {
                         Toast.makeText(YouthInSchoolActivity.this, "Success", Toast.LENGTH_SHORT).show();
                         clearFields();
-                    }else{
+                    } else {
                         Toast.makeText(YouthInSchoolActivity.this, "Failed To Save", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -141,7 +218,12 @@ public class YouthInSchoolActivity extends AppCompatActivity {
     }
 
     public void fillQuestions(View view) {
-        Intent intent=new Intent(getApplicationContext(), QuestionnaireActivity.class);
+        Intent intent = new Intent(getApplicationContext(), QuestionnaireActivity.class);
+        startActivity(intent);
+    }
+
+    public void getUserReports(View view) {
+        Intent intent = new Intent(getApplicationContext(), ReportsActivity.class);
         startActivity(intent);
     }
 }

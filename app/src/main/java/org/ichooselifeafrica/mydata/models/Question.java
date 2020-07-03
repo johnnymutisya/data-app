@@ -4,6 +4,9 @@ public class Question {
     private int id;
     private String title;
     private  int answers=2;
+    public boolean firstAnswerChecked = false;
+    public boolean secondAnswerChecked = false;
+    public boolean thirdAnswerChecked = false;
 
     public Question(int id, String title, int answers) {
         this.id = id;
