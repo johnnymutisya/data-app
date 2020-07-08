@@ -8,4 +8,5 @@ public class Urls {
     public static String FETCH_QUESTIONS_INFO_URL=BASE_URL+"fetch/questions";
     public static String FETCH_USER_INFO_URL=BASE_URL+"fetch/user/info";
     public static String FETCH_USER_REPORTS_URL=BASE_URL+"get/user/reports";
+    public static String FETCH_USER_IMAGES="http://66.228.55.80:7777/images/";
 }

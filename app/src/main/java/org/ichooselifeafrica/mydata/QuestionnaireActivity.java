@@ -1,10 +1,22 @@
 package org.ichooselifeafrica.mydata;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -22,6 +35,7 @@ import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.Picasso;
 
 import org.ichooselifeafrica.mydata.adapters.CustomAdapter;
 import org.ichooselifeafrica.mydata.constants.Urls;
@@ -30,7 +44,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -43,6 +61,10 @@ public class QuestionnaireActivity extends AppCompatActivity {
     ProgressDialog progress;
     int youth_id;
     String name;
+    int type=2;
+    ImageView imgUser;
+
+
 
 
 
@@ -58,9 +80,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         txtSchool = findViewById(R.id.txtSchool);
         txtCounty = findViewById(R.id.txtCounty);
         txtWard = findViewById(R.id.txtWard);
-
-
-
+        imgUser=findViewById(R.id.imgUser);
 
         txtSubCounty = findViewById(R.id.txtSubcounty);
         listQuestions.setAdapter(customAdapter);
@@ -68,11 +88,14 @@ public class QuestionnaireActivity extends AppCompatActivity {
         progress.setMessage("Processing....");
 
 
+
     }
 
     public void fetchQuestions() {
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(Urls.FETCH_QUESTIONS_INFO_URL, new JsonHttpResponseHandler() {
+        RequestParams params= new RequestParams();
+        params.put("type",type);
+        client.post(Urls.FETCH_QUESTIONS_INFO_URL, params,new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
@@ -184,6 +207,17 @@ public class QuestionnaireActivity extends AppCompatActivity {
                         String sub = response.getJSONObject("message").getString("sub_county");
                         String school = response.getJSONObject("message").getString("school");
                         String ward = response.getJSONObject("message").getString("ward");
+                        String image = response.getJSONObject("message").getString("image");
+                        Log.d(TAG, "onSuccess: "+image);
+                        if (image.length()>5){
+                            Log.d(TAG, "onSuccess:"+ Urls.FETCH_USER_IMAGES+image);
+                            Picasso.with(QuestionnaireActivity.this).load(Urls.FETCH_USER_IMAGES+image).fit().centerCrop().into(imgUser);
+                        }
+                        if (school.contains("N/A")){
+                            type=3;
+                        }else{
+                            type=2;
+                        }
                         txtSchool.setVisibility(View.VISIBLE);
                         txtSchool.setText("School: "+school);
                         txtNames.setVisibility(View.VISIBLE);
@@ -228,4 +262,10 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
         return true;
     }
+
+
+
+    /*Image Uploads*/
+
+    /*Image Uploads*/
 }

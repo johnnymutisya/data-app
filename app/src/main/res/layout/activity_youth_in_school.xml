@@ -284,6 +284,7 @@
             </RadioGroup>
 
             <mehdi.sakout.fancybuttons.FancyButton
+                android:onClick="launch_cam"
                 android:id="@+id/btn_capture_facials"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

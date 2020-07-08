@@ -3,17 +3,19 @@
     package="org.ichooselifeafrica.mydata">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/sealslogo"
+        android:label="MyData"
+        android:roundIcon="@mipmap/sealslogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:label="Login"
             android:name=".LoginActivity"
+            android:label="MyData"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,17 +24,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:label="New Agent"
             android:name=".YouthInSchoolActivity"
+            android:label="Capture Change Agent Details"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:label="Questions"
             android:name=".QuestionnaireActivity"
+            android:label="Capture Youth Data "
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ReportsActivity"
-            android:label="Reports"
+            android:label="View Youth Reports"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
     </application>
 
 </manifest>

@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#3ae938"
     tools:context=".LoginActivity">
 
     <android.support.design.widget.TextInputLayout
@@ -69,6 +70,8 @@
         fancy:fb_radius="10dp"
         fancy:fb_text="Sign In"
         fancy:fb_textColor="#FFFFFF" />
+
+
 
 
 </android.support.constraint.ConstraintLayout>
