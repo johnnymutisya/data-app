@@ -58,19 +58,21 @@ public class ContraceptiveReportActivity extends AppCompatActivity {
                                 for (int i=0; i<array.length(); i++){
                                     JSONObject itemObj = array.getJSONObject(i);
                                     String text=itemObj.getString("item")+" : "+itemObj.getString("count");
+                                    Log.d(TAG, "onResponse: "+text);
                                     if (i==0){
                                       txt_1.setText(text);
                                     }
-                                    else if (i==2){
+                                    else if (i==1){
                                         txt_2.setText(text);
                                     }
-                                    else if (i==3){
+                                    else if (i==2){
                                         txt_3.setText(text);
-                                    } else if (i==4){
+                                    }
+                                    else if (i==3){
                                         txt_4.setText(text);
-                                    } else if (i==5){
+                                    } else if (i==4){
                                         txt_5.setText(text);
-                                    } else if (i==6){
+                                    } else if (i==5){
                                         txt_6.setText(text);
                                     }
                                 }

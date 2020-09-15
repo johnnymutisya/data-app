@@ -63,7 +63,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
 
 public class YouthInSchoolActivity extends AppCompatActivity {
 
-    EditText inputNames, inputAgentNo, inputAge, inputSchool, inputForm, inputEduLevelCompletion;
+    EditText inputNames, inputAgentNo, inputAge, inputSchool, inputForm;
     RadioGroup rgGender, rgReligion;
     String gender, religion;
     ProgressDialog progress;
@@ -71,7 +71,7 @@ public class YouthInSchoolActivity extends AppCompatActivity {
     TextInputLayout textInputLayoutSchool, textInputLayoutForm, layoutHighestLevel, layoutHighestLevelYear;
     TextView txtMaritalStatus;
     RadioGroup radioGroupMaritalStatus, radioGroupSchooling;
-    String [] sub_counties= {"Turkana West", "Mvita", "Laikipia West", "Tigania West", "Kangundo", "Kibra", "Garissa Town", "Ainabkoi", "Bomet Central", "Kisumu East"};
+    String [] sub_counties= {"Turkana West", "Mvita", "Laikipia West", "North Imenti", "Kangundo", "Kibra", "Garissa Town", "Ainabkoi", "Bomet Central", "Kisumu East"};
 
     String sub_county="";
     String maritalStatus = "";
@@ -83,10 +83,12 @@ public class YouthInSchoolActivity extends AppCompatActivity {
 
     String IMAGE_UPLOAD_URL="";
 
-    Spinner county_spinner, subcounty_spinner, ward_spinner, spinnerEduLevel;
+    Spinner county_spinner, subcounty_spinner, ward_spinner, spinnerEduLevel,spinnerYearOfCompletion;
     ArrayList<String> array_list_subcounties, array_list_ward;
 
     ArrayAdapter subCounty_adapter, ward_adapter;
+
+    TextView labelHighestLevel, labelYearOfCompletion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,11 +103,12 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         subcounty_spinner=findViewById(R.id.spinnerSubCounties);
         ward_spinner = findViewById(R.id.spinnerWard);
         spinnerEduLevel=findViewById(R.id.spinnerEduLevel);
+        spinnerYearOfCompletion=findViewById(R.id.spinnerYearOfCompletion);
         //inputCounty = findViewById(R.id.inputCounty);
         inputSchool = findViewById(R.id.inputSchool);
         inputForm = findViewById(R.id.inputForm);
 //        inputEduLevel = findViewById(R.id.inputEduLevel);
-        inputEduLevelCompletion = findViewById(R.id.inputEduLevelCompletion);
+//        inputEduLevelCompletion = findViewById(R.id.inputEduLevelCompletion);
         allReportsBtn=findViewById(R.id.btn_all_reports);
         ceo_reports_1=findViewById(R.id.ceo_reports_1);
         ceo_reports_2=findViewById(R.id.ceo_reports_2);
@@ -116,7 +119,10 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         textInputLayoutSchool = findViewById(R.id.textInputLayoutSchool);
         textInputLayoutForm = findViewById(R.id.textInputLayoutForm);
 //        layoutHighestLevel = findViewById(R.id.layoutHighestLevel);
-        layoutHighestLevelYear = findViewById(R.id.layoutHighestLevelYear);
+//        layoutHighestLevelYear = findViewById(R.id.layoutHighestLevelYear);
+
+        labelHighestLevel=findViewById(R.id.labelHighestLevel);
+        labelYearOfCompletion=findViewById(R.id.labelYearOfCompletion);
 
         txtMaritalStatus = findViewById(R.id.txtMaritalStatus);
 
@@ -228,8 +234,10 @@ public class YouthInSchoolActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
                 if (checkedId == R.id.radioInSchool) {
                     inSchool = true;
+                    labelHighestLevel.setVisibility(View.GONE);
+                    labelYearOfCompletion.setVisibility(View.GONE);
                     spinnerEduLevel.setVisibility(View.GONE);
-                    layoutHighestLevelYear.setVisibility(View.GONE);
+                    spinnerYearOfCompletion.setVisibility(View.GONE);
                     txtMaritalStatus.setVisibility(View.GONE);
                     radioGroupMaritalStatus.setVisibility(View.GONE);
                     //show others
@@ -240,9 +248,11 @@ public class YouthInSchoolActivity extends AppCompatActivity {
                     //vice versa
                     inputSchool.setVisibility(View.GONE);
                     inputForm.setVisibility(View.GONE);
+                    labelHighestLevel.setVisibility(View.VISIBLE);
+                    labelYearOfCompletion.setVisibility(View.VISIBLE);
 
                     spinnerEduLevel.setVisibility(View.VISIBLE);
-                    layoutHighestLevelYear.setVisibility(View.VISIBLE);
+                    spinnerYearOfCompletion.setVisibility(View.VISIBLE);
                     txtMaritalStatus.setVisibility(View.VISIBLE);
                     radioGroupMaritalStatus.setVisibility(View.VISIBLE);
                 }
@@ -318,8 +328,9 @@ public class YouthInSchoolActivity extends AppCompatActivity {
 
     private void populateWards(String subcounty) {
         array_list_ward.clear();
+        //Silibwet, Singorwet, Ndarawetta, Chesoen & Mutarakwa
         if (subcounty.contains("Bomet Central")){
-            List<String> list_0 = Arrays.asList("Silibwet township", "Bomet University","Singorwet", "Longisa", "Kembu", "Chemaner", "Chemaner");
+            List<String> list_0 = Arrays.asList("Silibwet township","Singorwet", "Longisa", "Kembu", "Ndarawetta", "Chemaner");
             array_list_ward.addAll(list_0);
         }
         else if (subcounty.contains("Mvita")){
@@ -339,7 +350,7 @@ public class YouthInSchoolActivity extends AppCompatActivity {
             array_list_ward.addAll(list_0);
         }
         else if (subcounty.contains("Kisumu East")){
-            List<String> list_0 = Arrays.asList("Kolwa East","Kolwa East","Nyalenda A","Nyalenda A","Kajulu","Kajulu","Manyatta B","Kolwa Central","Kolwa Central","Manyatta B");
+            List<String> list_0 = Arrays.asList("Kolwa East","Nyalenda A","Kajulu","Kolwa Central","Kolwa Central","Manyatta B");
             array_list_ward.addAll(list_0);
         }
         else if (subcounty.contains("Kibra")){
@@ -352,6 +363,10 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         }
         else if (subcounty.contains("Turkana West")){
             List<String> list_0 = Arrays.asList("Kakuma Ward","Lopur Ward","Letea Ward","Songot Ward","Kalobeyei Ward","Lokichoggio Ward","Nanaam Ward");
+            array_list_ward.addAll(list_0);
+        }
+        else if (subcounty.contains("Garissa Town")){
+            List<String> list_0 = Arrays.asList("Waberi","Galbet","Township","Iftin");
             array_list_ward.addAll(list_0);
         }
         ward_adapter.notifyDataSetChanged();
@@ -387,10 +402,10 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         maritalStatus = inSchool ? "N/A" : maritalStatus;
         //inputEduLevel,inputEduLevelCompletion
         String highestLevel = inSchool ? "N/A" : spinnerEduLevel.getSelectedItem().toString();
-        String yearCompletion = inSchool ? "N/A" : inputEduLevelCompletion.getText().toString().trim();
+        String yearCompletion = inSchool ? "N/A" : spinnerYearOfCompletion.getSelectedItem().toString();//inputEduLevelCompletion.getText().toString().trim();
 
 
-        if (highestLevel.isEmpty() || yearCompletion.isEmpty() || names.isEmpty() || agent_no.isEmpty() || age.isEmpty() || ward.isEmpty() || sub_county.isEmpty() || county.isEmpty() || school.isEmpty() || form.isEmpty()) {
+        if (highestLevel.isEmpty() || names.isEmpty() || agent_no.isEmpty() || age.isEmpty() || ward.isEmpty() || sub_county.isEmpty() || county.isEmpty() || school.isEmpty() || form.isEmpty()) {
             Toast.makeText(this, "Fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }

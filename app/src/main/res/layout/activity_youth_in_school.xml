@@ -245,7 +245,16 @@
                     android:hint="Form" />
             </android.support.design.widget.TextInputLayout>
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/labelHighestLevel"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:text="Highest Level Of Education"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <Spinner
+                android:visibility="gone"
                 android:entries="@array/eduLevels"
                 android:layout_marginTop="@dimen/item_spacing"
                 android:id="@+id/spinnerEduLevel"
@@ -267,20 +276,37 @@
                     <!--android:hint="Highest Level Of Education" />-->
             <!--</android.support.design.widget.TextInputLayout>-->
 
-            <android.support.design.widget.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/layoutHighestLevelYear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/item_spacing">
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:visibility="gone"-->
+                <!--android:id="@+id/layoutHighestLevelYear"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="@dimen/item_spacing">-->
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/inputEduLevelCompletion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:hint="When Did You Complete " />
-            </android.support.design.widget.TextInputLayout>
+                <!--<android.support.design.widget.TextInputEditText-->
+                    <!--android:id="@+id/inputEduLevelCompletion"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:inputType="number"-->
+                    <!--android:hint="When Did You Complete " />-->
+            <!--</android.support.design.widget.TextInputLayout>-->
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/labelYearOfCompletion"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:text="Year Of Completion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Spinner
+                android:visibility="gone"
+                android:entries="@array/yearOfCompletion"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:id="@+id/spinnerYearOfCompletion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></Spinner>
+
+
 
 
             <TextView

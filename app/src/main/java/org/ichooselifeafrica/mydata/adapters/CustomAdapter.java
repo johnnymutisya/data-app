@@ -15,6 +15,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.ichooselifeafrica.mydata.R;
 import org.ichooselifeafrica.mydata.models.Question;
 import org.ichooselifeafrica.mydata.models.Response;
@@ -82,10 +84,13 @@ public class CustomAdapter extends BaseAdapter {
             radioNotAware.setVisibility(View.INVISIBLE);
         }
 
-        if (question.getAnswers() == 24) {
-            //inputValue.setVisibility(View.VISIBLE);
+        if (question.getAnswers() == 24 && question.firstAnswerChecked) {
+            inputValue.setVisibility(View.VISIBLE);
             inputValue.setText(question.getInputValueAns());
+        }else if(question.getAnswers() == 24 && !question.firstAnswerChecked){
+            inputValue.setVisibility(View.GONE);
         }
+
 
 
         txtQuestion.setText(question.getTitle());
@@ -94,23 +99,27 @@ public class CustomAdapter extends BaseAdapter {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
                 try {
-                 /*   for (Response p : selectedAnswers) {
-                        if (p.getQuestion_id() == question.getId()) {
-                            selectedAnswers.remove(p);
-                        }
-                    }*/
                     int value = 0;
                     int question_id = question.getId();
                     if (checkedId == R.id.radioYes) {
                         value = 1;
                         question.firstAnswerChecked = true;
+                        question.secondAnswerChecked=false;
+                        question.thirdAnswerChecked = false;
                     } else if (checkedId == R.id.radioNo) {
-                        question.secondAnswerChecked = true;
+                        question.firstAnswerChecked = false;
+                        question.secondAnswerChecked=true;
+                        question.thirdAnswerChecked = false;
                         value = 2;
                     } else if (checkedId == R.id.radioNotAware) {
+                        question.firstAnswerChecked = false;
+                        question.secondAnswerChecked=false;
                         question.thirdAnswerChecked = true;
                         value = 3;
                     }
+
+                    Gson gson=new Gson();
+                    Log.d(TAG, "onCheckedChanged: "+gson.toJson(question));
                    // notifyDataSetChanged();
                     Response res = new Response(question_id, value);
                     res.setQuestionType(question.getAnswers() + "");
@@ -127,6 +136,9 @@ public class CustomAdapter extends BaseAdapter {
         radioYes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                question.firstAnswerChecked = true;
+                question.secondAnswerChecked=false;
+                question.thirdAnswerChecked = false;
                 if (isChecked && question.getAnswers() == 24) {
                     inputValue.setVisibility(View.VISIBLE);
                 } else if (!isChecked && question.getAnswers() == 24) {
@@ -163,11 +175,6 @@ public class CustomAdapter extends BaseAdapter {
                     question.setInputValueAns(charSequence.toString());
                     Log.d("SERVER_SAYS", "onTextChanged: "+charSequence.toString());
                     try {
-                       /* for (Response p : selectedAnswers) {
-                            if (p.getQuestion_id() == question.getId()) {
-                                p.setInputVal(charSequence.toString());
-                            }
-                        }*/
                         for (String key:resultMap.keySet()) {
                             Response response = resultMap.get(key);
                             if (response.getQuestion_id()==question.getId()){
