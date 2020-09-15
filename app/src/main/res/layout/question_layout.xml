@@ -41,4 +41,12 @@
             android:text="Not Aware" />
     </RadioGroup>
 
+    <EditText
+        android:visibility="gone"
+        android:layout_marginTop="10px"
+        android:id="@+id/inputValue"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

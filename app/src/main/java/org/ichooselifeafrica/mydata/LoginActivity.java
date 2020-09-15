@@ -16,6 +16,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.ichooselifeafrica.mydata.Reports.PerWardActivity;
 import org.ichooselifeafrica.mydata.constants.Urls;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 import cz.msebera.android.httpclient.Header;
 
 public class LoginActivity extends AppCompatActivity {
+
     private EditText inputEmail;
     private EditText inputPassword;
     ProgressDialog progress;
@@ -37,7 +39,8 @@ public class LoginActivity extends AppCompatActivity {
         progress.setMessage("Processing ....");
         SharedPreferences prefs = this.getSharedPreferences("database", MODE_PRIVATE);
         String email = prefs.getString("email", "");
-        //inputEmail.setText(email);
+        inputEmail.setText(email);
+        //inputPassword.setText("password");
     }
 
     public void login(View view) {
@@ -70,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                         prefs.putString("user_id", response.getJSONObject("message").getString("id"));
                         prefs.putString("name", response.getJSONObject("message").getString("name"));
                         prefs.putString("email", response.getJSONObject("message").getString("email"));
+                        prefs.putBoolean("authorized", response.getJSONObject("message").getInt("authorized")==1 || response.getJSONObject("message").getInt("authorized")==2);
                         prefs.commit();
                         Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
                         Intent intent=new Intent(getApplicationContext(), YouthInSchoolActivity.class);
@@ -92,5 +96,11 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void Reports(View view) {
+        Intent startIntent=new Intent(getApplicationContext(),GeneratedReportsActivity.class);
+        startActivity(startIntent);
+
     }
 }

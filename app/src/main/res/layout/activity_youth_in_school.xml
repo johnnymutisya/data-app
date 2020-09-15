@@ -119,32 +119,61 @@
                     android:inputType="number" />
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textInputLayout6"
+            <TextView
+                android:layout_marginTop="@dimen/item_spacing"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/item_spacing">
+                android:text="Select County"
+                android:layout_height="wrap_content" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/inputWard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Ward" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textInputLayout7"
+            <Spinner
+                android:id="@+id/spinner_county"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:entries="@array/counties"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/item_spacing">
+                android:layout_height="wrap_content"/>
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/inputSubCounty"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Subcounty" />
-            </android.support.design.widget.TextInputLayout>
 
+            <Spinner
+                android:layout_marginTop="@dimen/item_spacing"
+                android:id="@+id/spinnerSubCounties"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></Spinner>
+
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:id="@+id/textInputLayout7"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="@dimen/item_spacing">-->
+
+                <!--<android.support.design.widget.TextInputEditText-->
+                    <!--android:editable="false"-->
+                    <!--android:id="@+id/inputSubCounty"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:hint="Subcounty" />-->
+            <!--</android.support.design.widget.TextInputLayout>-->
+
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:id="@+id/textInputLayout6"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="@dimen/item_spacing">-->
+
+                <!--<android.support.design.widget.TextInputEditText-->
+                    <!--android:id="@+id/inputWard"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:hint="Ward" />-->
+            <!--</android.support.design.widget.TextInputLayout>-->
+            <Spinner
+                android:layout_marginTop="@dimen/item_spacing"
+                android:id="@+id/spinnerWard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></Spinner>
+
+
+
+<!--
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/textInputLayout8"
                 android:layout_width="match_parent"
@@ -156,7 +185,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="County" />
-            </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout>-->
 
             <TextView
                 android:layout_marginTop="@dimen/item_spacing"
@@ -216,19 +245,27 @@
                     android:hint="Form" />
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/layoutHighestLevel"
+            <Spinner
+                android:entries="@array/eduLevels"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:id="@+id/spinnerEduLevel"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/item_spacing">
+                android:layout_height="wrap_content"></Spinner>
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/inputEduLevel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Highest Level Of Education" />
-            </android.support.design.widget.TextInputLayout>
+
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:visibility="gone"-->
+                <!--android:id="@+id/layoutHighestLevel"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="@dimen/item_spacing">-->
+
+                <!--<android.support.design.widget.TextInputEditText-->
+                    <!--android:id="@+id/inputEduLevel"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:hint="Highest Level Of Education" />-->
+            <!--</android.support.design.widget.TextInputLayout>-->
 
             <android.support.design.widget.TextInputLayout
                 android:visibility="gone"
@@ -299,7 +336,7 @@
                 fancy:fb_focusColor="#9bd823"
                 fancy:fb_iconPosition="left"
                 fancy:fb_radius="1dp"
-                fancy:fb_text="Capture Facials"
+                fancy:fb_text="Capture Biometric Facials(Mandatory!!)"
                 fancy:fb_textColor="#FFFFFF" />
 
             <mehdi.sakout.fancybuttons.FancyButton
@@ -338,7 +375,7 @@
                 fancy:fb_iconPosition="left"
                 fancy:fb_radius="1dp"
                 android:onClick="fillQuestions"
-                fancy:fb_text="Questionnaire"
+                fancy:fb_text="Proceed To Answer Questionnaire items."
                 fancy:fb_textColor="#FFFFFF" />
 
 
@@ -358,11 +395,134 @@
                 fancy:fb_iconPosition="left"
                 fancy:fb_radius="1dp"
                 android:onClick="getUserReports"
-                fancy:fb_text="Reports"
+                fancy:fb_text="View Each Shujaa Responses "
+                fancy:fb_textColor="#FFFFFF" />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:visibility="gone"
+                android:id="@+id/btn_all_reports"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#7ab800"
+                fancy:fb_focusColor="#9bd823"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="1dp"
+                android:onClick="allReports"
+                fancy:fb_text="View Master Seal Reports"
                 fancy:fb_textColor="#FFFFFF" />
 
 
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:visibility="gone"
+                android:id="@+id/ceo_reports_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#7ab800"
+                fancy:fb_focusColor="#9bd823"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="1dp"
+                android:onClick="ceo_reports_1"
+                fancy:fb_text="View Shujaas captured by Each Seal"
+                fancy:fb_textColor="#FFFFFF" />
 
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:visibility="gone"
+                android:id="@+id/ceo_reports_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#7ab800"
+                fancy:fb_focusColor="#9bd823"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="1dp"
+                android:onClick="ceo_reports_2"
+                fancy:fb_text="View Total Service Uptake Per Item"
+                fancy:fb_textColor="#FFFFFF" />
+
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/clean_report"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#7ab800"
+                fancy:fb_focusColor="#9bd823"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="1dp"
+                android:onClick="in_school"
+                fancy:fb_text="View Service Uptake for In School Youths"
+                fancy:fb_textColor="#FFFFFF" />
+
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/clean_report_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#7ab800"
+                fancy:fb_focusColor="#9bd823"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="1dp"
+                android:onClick="out_school"
+                fancy:fb_text="View Service Uptake For Out School Youths"
+                fancy:fb_textColor="#FFFFFF" />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="@dimen/item_spacing"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#7ab800"
+                fancy:fb_focusColor="#9bd823"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="1dp"
+                android:onClick="contraceptive_reports"
+                fancy:fb_text="View Contraceptive Reports"
+                fancy:fb_textColor="#FFFFFF" />
 
 
 

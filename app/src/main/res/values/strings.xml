@@ -1,4 +1,28 @@
 <resources>
-    <string name="app_name">My Data</string>
+    <string name="app_name">Shujaa Tracking</string>
     <string name="title_activity_reports">ReportsActivity</string>
+
+    <string-array name="counties">
+        <item>Turkana</item>
+        <item>Mombasa</item>
+        <item>Laikipia</item>
+        <item>Meru</item>
+        <item>Machakos</item>
+        <item>Nairobi</item>
+        <item>Garissa</item>
+        <item>Uasin gishu</item>
+        <item>Bomet</item>
+        <item>Kisumu</item>
+    </string-array>
+
+    <string-array name="eduLevels">
+        <item>Craft</item>
+        <item>Certificate</item>
+        <item>Diploma</item>
+        <item>Degree</item>
+        <item>Masters Degree</item>
+        <item>PHD</item>
+        <item>Any Other</item>
+    </string-array>
+
 </resources>

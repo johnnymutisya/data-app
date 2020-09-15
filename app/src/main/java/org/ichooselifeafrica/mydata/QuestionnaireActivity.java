@@ -40,6 +40,7 @@ import com.squareup.picasso.Picasso;
 import org.ichooselifeafrica.mydata.adapters.CustomAdapter;
 import org.ichooselifeafrica.mydata.constants.Urls;
 import org.ichooselifeafrica.mydata.models.Question;
+import org.ichooselifeafrica.mydata.models.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -116,6 +117,8 @@ public class QuestionnaireActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                throwable.printStackTrace();
+                Log.e(TAG, "onFailure: "+ errorResponse.toString());
                 Toast.makeText(QuestionnaireActivity.this, "Failed To Fetch", Toast.LENGTH_SHORT).show();
             }
         });
@@ -134,6 +137,20 @@ public class QuestionnaireActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String data = gson.toJson(customAdapter.getSelectedAnswers());
         Log.d(TAG, "submitQuestions: " + data);
+//        if (true)
+//        {
+//            return;
+//        }
+        for (Response res : customAdapter.getSelectedAnswers() ){
+            if (res.getQuestionType().equals("24") && res.getInputVal().trim().isEmpty() &&  res.getValue()==1){
+                Toast.makeText(this, "Some questions need additional text input after selecting Yes "+res.getQuestion_id(), Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+//        if (true){
+//            return;
+//        }
         params.put("data", data);
         SharedPreferences prefs = this.getSharedPreferences("database", MODE_PRIVATE);
         String user_id = prefs.getString("user_id", "0");
@@ -160,12 +177,13 @@ public class QuestionnaireActivity extends AppCompatActivity {
                         txtWard.setVisibility(View.GONE);
                         txtWard.setText("");
                         txtSubCounty.setVisibility(View.GONE);
+                        imgUser.setVisibility(View.GONE);
                         txtSubCounty.setText("");
                         inputAgentNumber.setText("");
 
                         Toast.makeText(QuestionnaireActivity.this, "Successfully Submitted", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(QuestionnaireActivity.this, "Failed To Submit Responses", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(QuestionnaireActivity.this, "Failed To Submit Responses. Check Agent Number", Toast.LENGTH_SHORT).show();
 
                     }
                 } catch (JSONException e) {
@@ -228,6 +246,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
                         txtWard.setText("Ward: "+ward);
                         txtSubCounty.setVisibility(View.VISIBLE);
                         txtSubCounty.setText("Sub County :"+sub);
+                        imgUser.setVisibility(View.VISIBLE);
                         fetchQuestions();
                     } else {
                         Toast.makeText(QuestionnaireActivity.this, "No Record Found", Toast.LENGTH_SHORT).show();

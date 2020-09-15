@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.Picasso;
 
 import org.ichooselifeafrica.mydata.adapters.CustomAdapter;
 import org.ichooselifeafrica.mydata.adapters.CustomAnswersAdapter;
@@ -40,6 +42,7 @@ public class ReportsActivity extends AppCompatActivity {
     ProgressDialog progress;
     ListView listQuestions;
     TextView txtNames;
+    ImageView imgUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +56,14 @@ public class ReportsActivity extends AppCompatActivity {
         customAdapter = new CustomAnswersAdapter(this, questionArrayList);
         inputAgentNumber = findViewById(R.id.inputAgentNumber);
         txtNames = findViewById(R.id.txtNames);
-
+        imgUser=findViewById(R.id.imgUser);
         listQuestions.setAdapter(customAdapter);
         this.progress = new ProgressDialog(this);
         progress.setMessage("Processing....");
 
 
     }
-
+    String TAG="DATA";
     public void getReports(View view) {
         //close keyboard
         View z = this.getCurrentFocus();
@@ -90,12 +93,21 @@ public class ReportsActivity extends AppCompatActivity {
 
                         JSONArray array = response.getJSONObject("message").getJSONArray("answers");
                         txtNames.setText(response.getJSONObject("message").getString("names"));
+                        String image = response.getJSONObject("message").getString("image");
+                        Log.d(TAG, "onSuccess: "+image);
+                        if (image.length()>5){
+                            Log.d(TAG, "onSuccess:"+ Urls.FETCH_USER_IMAGES+image);
+                            imgUser.setVisibility(View.VISIBLE);
+                            Picasso.with(ReportsActivity.this).load(Urls.FETCH_USER_IMAGES+image).fit().centerCrop().into(imgUser);
+                        }
                         txtNames.setVisibility(View.VISIBLE);
                         for (int i = 0; i < array.length(); i++) {
 
                             JSONObject item = array.getJSONObject(i);
                             String question = item.getJSONObject("question").getString("title");
                             String answer = "";
+                            String text_value = item.getString("text_value");
+
                             if (item.getString("value").equals("1")){
                                 answer="Yes";
                             }
@@ -109,6 +121,9 @@ public class ReportsActivity extends AppCompatActivity {
                             }
 
                             IndividualReport r = new IndividualReport(question, answer);
+                            if (text_value.length()>0){
+                                  r.setText_value(text_value);
+                            }
                             questionArrayList.add(r);
                         }
                         customAdapter.notifyDataSetChanged();

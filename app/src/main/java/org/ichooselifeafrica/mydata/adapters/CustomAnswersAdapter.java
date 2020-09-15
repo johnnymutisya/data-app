@@ -43,9 +43,14 @@ public class CustomAnswersAdapter extends BaseAdapter {
         view = inflater.inflate(R.layout.individual_report_item_layout, null);
         TextView txtQuestion = view.findViewById(R.id.txtQuestion);
         TextView txtAnswer = view.findViewById(R.id.txtAnswer);
+        TextView txtValue = view.findViewById(R.id.txtValue);
         IndividualReport r = questionsList.get(i);
         txtQuestion.setText(r.getQuestion());
         txtAnswer.setText(r.getAnswer());
+        if (r.getText_value()!=null && !r.getText_value().contains("null")){
+            txtValue.setVisibility(View.VISIBLE);
+            txtValue.setText(r.getText_value());
+        }
         return view;
     }
 }

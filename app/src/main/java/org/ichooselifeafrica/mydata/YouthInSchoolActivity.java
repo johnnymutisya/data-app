@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,7 +14,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -27,8 +27,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,14 +39,13 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
+import org.ichooselifeafrica.mydata.Reports.ContraceptiveReportActivity;
+import org.ichooselifeafrica.mydata.Reports.QuestionListResponsesActivity;
+import org.ichooselifeafrica.mydata.Reports.QuestionResponseActivity;
+import org.ichooselifeafrica.mydata.Reports.ShujaaYouthDataActivity;
 import org.ichooselifeafrica.mydata.constants.Urls;
-import org.ichooselifeafrica.mydata.utils.ImageCompression;
 import org.ichooselifeafrica.mydata.utils.ImageLoadingUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,13 +54,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
-import cz.msebera.android.httpclient.Header;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class YouthInSchoolActivity extends AppCompatActivity {
 
-    EditText inputNames, inputAgentNo, inputAge, inputWard, inputSubCounty, inputCounty, inputSchool, inputForm, inputEduLevel, inputEduLevelCompletion;
+    EditText inputNames, inputAgentNo, inputAge, inputSchool, inputForm, inputEduLevelCompletion;
     RadioGroup rgGender, rgReligion;
     String gender, religion;
     ProgressDialog progress;
@@ -66,13 +71,22 @@ public class YouthInSchoolActivity extends AppCompatActivity {
     TextInputLayout textInputLayoutSchool, textInputLayoutForm, layoutHighestLevel, layoutHighestLevelYear;
     TextView txtMaritalStatus;
     RadioGroup radioGroupMaritalStatus, radioGroupSchooling;
+    String [] sub_counties= {"Turkana West", "Mvita", "Laikipia West", "Tigania West", "Kangundo", "Kibra", "Garissa Town", "Ainabkoi", "Bomet Central", "Kisumu East"};
 
+    String sub_county="";
     String maritalStatus = "";
     boolean inSchool = true;
     int MY_PERMISSIONS_REQUEST_CAMERA=1111;
     private ImageLoadingUtils utils;
 
+    FancyButton allReportsBtn, ceo_reports_1, ceo_reports_2;
+
     String IMAGE_UPLOAD_URL="";
+
+    Spinner county_spinner, subcounty_spinner, ward_spinner, spinnerEduLevel;
+    ArrayList<String> array_list_subcounties, array_list_ward;
+
+    ArrayAdapter subCounty_adapter, ward_adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,19 +96,26 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         inputNames = findViewById(R.id.inputNames);
         inputAgentNo = findViewById(R.id.inputAgentNo);
         inputAge = findViewById(R.id.inputAge);
-        inputWard = findViewById(R.id.inputWard);
-        inputSubCounty = findViewById(R.id.inputSubCounty);
-        inputCounty = findViewById(R.id.inputCounty);
+        //inputWard = findViewById(R.id.inputWard);
+        //inputSubCounty = findViewById(R.id.inputSubCounty);
+        subcounty_spinner=findViewById(R.id.spinnerSubCounties);
+        ward_spinner = findViewById(R.id.spinnerWard);
+        spinnerEduLevel=findViewById(R.id.spinnerEduLevel);
+        //inputCounty = findViewById(R.id.inputCounty);
         inputSchool = findViewById(R.id.inputSchool);
         inputForm = findViewById(R.id.inputForm);
-        inputEduLevel = findViewById(R.id.inputEduLevel);
+//        inputEduLevel = findViewById(R.id.inputEduLevel);
         inputEduLevelCompletion = findViewById(R.id.inputEduLevelCompletion);
+        allReportsBtn=findViewById(R.id.btn_all_reports);
+        ceo_reports_1=findViewById(R.id.ceo_reports_1);
+        ceo_reports_2=findViewById(R.id.ceo_reports_2);
+        county_spinner=findViewById(R.id.spinner_county);
 
         utils = new ImageLoadingUtils(this);
 
         textInputLayoutSchool = findViewById(R.id.textInputLayoutSchool);
         textInputLayoutForm = findViewById(R.id.textInputLayoutForm);
-        layoutHighestLevel = findViewById(R.id.layoutHighestLevel);
+//        layoutHighestLevel = findViewById(R.id.layoutHighestLevel);
         layoutHighestLevelYear = findViewById(R.id.layoutHighestLevelYear);
 
         txtMaritalStatus = findViewById(R.id.txtMaritalStatus);
@@ -102,13 +123,112 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         radioGroupMaritalStatus = findViewById(R.id.radioGroupMaritalStatus);
         radioGroupSchooling = findViewById(R.id.radioGroupSchooling);
 
+        array_list_subcounties =new ArrayList<>();
+        array_list_ward=new ArrayList<>();
+
+        subCounty_adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, array_list_subcounties);//, ward_adapter
+        ward_adapter = new ArrayAdapter(this,android.R.layout.simple_spinner_item, array_list_ward);//, ward_adapter
+
+        subCounty_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        subcounty_spinner.setAdapter(subCounty_adapter);
+
+        ward_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ward_spinner.setAdapter(ward_adapter);
+
+
+
+        county_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                sub_county=sub_counties[position];
+                //inputSubCounty.setText(sub_county);
+                //populate the subscounty spinner
+                populateWards(sub_county);
+                array_list_subcounties.clear();
+                Toast.makeText(YouthInSchoolActivity.this, "Subcounty "+sub_county, Toast.LENGTH_SHORT).show();
+                if (position==0){
+                    List<String> list_0 = Arrays.asList(sub_county);
+                    array_list_subcounties.addAll(list_0);
+                }
+                else if (position==1){
+                    List<String> list_0 = Arrays.asList(sub_county);
+                    array_list_subcounties.addAll(list_0);
+                }
+                else if (position==2){
+                    List<String> list_0 = Arrays.asList(sub_county);
+                    array_list_subcounties.addAll(list_0);
+                }
+                else if (position==3){
+                    List<String> list_0 = Arrays.asList(sub_county);
+                    array_list_subcounties.addAll(list_0);
+                }
+                else if (position==4){
+                    List<String> list_0 = Arrays.asList(sub_county);
+                    array_list_subcounties.addAll(list_0);
+                }
+                else if (position==5){
+                    List<String> list_0 = Arrays.asList(sub_county);
+                    array_list_subcounties.addAll(list_0);
+                }
+                else if (position==6){
+                    List<String> list_0 = Arrays.asList(sub_county);
+                    array_list_subcounties.addAll(list_0);
+                }
+                else if (position==7){
+                    List<String> list_0 = Arrays.asList(sub_county);
+                    array_list_subcounties.addAll(list_0);
+                }
+                else if (position==8){
+                    List<String> list_0 = Arrays.asList(sub_county);
+                    array_list_subcounties.addAll(list_0);
+                }
+                else if (position==9){
+                    List<String> list_0 = Arrays.asList(sub_county);
+                    array_list_subcounties.addAll(list_0);
+                }
+                subCounty_adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        subcounty_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                String subcounty = subcounty_spinner.getSelectedItem().toString();
+                populateWards(subcounty);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        ward_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 
         radioGroupSchooling.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
                 if (checkedId == R.id.radioInSchool) {
                     inSchool = true;
-                    layoutHighestLevel.setVisibility(View.GONE);
+                    spinnerEduLevel.setVisibility(View.GONE);
                     layoutHighestLevelYear.setVisibility(View.GONE);
                     txtMaritalStatus.setVisibility(View.GONE);
                     radioGroupMaritalStatus.setVisibility(View.GONE);
@@ -121,7 +241,7 @@ public class YouthInSchoolActivity extends AppCompatActivity {
                     inputSchool.setVisibility(View.GONE);
                     inputForm.setVisibility(View.GONE);
 
-                    layoutHighestLevel.setVisibility(View.VISIBLE);
+                    spinnerEduLevel.setVisibility(View.VISIBLE);
                     layoutHighestLevelYear.setVisibility(View.VISIBLE);
                     txtMaritalStatus.setVisibility(View.VISIBLE);
                     radioGroupMaritalStatus.setVisibility(View.VISIBLE);
@@ -184,8 +304,57 @@ public class YouthInSchoolActivity extends AppCompatActivity {
 
             }
         }
+        SharedPreferences prefs = this.getSharedPreferences("database", MODE_PRIVATE);
+        boolean authorized = prefs.getBoolean("authorized", false);
+
+        if (authorized){
+            allReportsBtn.setVisibility(View.VISIBLE);
+            ceo_reports_2.setVisibility(View.VISIBLE);
+            ceo_reports_1.setVisibility(View.VISIBLE);
+        }
 
 
+    }
+
+    private void populateWards(String subcounty) {
+        array_list_ward.clear();
+        if (subcounty.contains("Bomet Central")){
+            List<String> list_0 = Arrays.asList("Silibwet township", "Bomet University","Singorwet", "Longisa", "Kembu", "Chemaner", "Chemaner");
+            array_list_ward.addAll(list_0);
+        }
+        else if (subcounty.contains("Mvita")){
+            List<String> list_0 = Arrays.asList("Ganjoni/Shimanzi","Old Town","Tononoka","Old Town","Tudor","Majengo/Mwembe Tayari");
+            array_list_ward.addAll(list_0);
+        }
+        else if (subcounty.contains("Kangundo")){
+            List<String> list_0 = Arrays.asList("Kangundo West","Kangundo North","Kangundo Central","Kangundo East");
+            array_list_ward.addAll(list_0);
+        }
+        else if (subcounty.contains("Ainabkoi")){
+            List<String> list_0 = Arrays.asList("Ainabkoi Olare","Kapsoya","Kaptagat");
+            array_list_ward.addAll(list_0);
+        }
+        else if (subcounty.contains("North Imenti")){
+            List<String> list_0 = Arrays.asList("Ntima East","Ntima West","Nyaki West","Nyaki East");
+            array_list_ward.addAll(list_0);
+        }
+        else if (subcounty.contains("Kisumu East")){
+            List<String> list_0 = Arrays.asList("Kolwa East","Kolwa East","Nyalenda A","Nyalenda A","Kajulu","Kajulu","Manyatta B","Kolwa Central","Kolwa Central","Manyatta B");
+            array_list_ward.addAll(list_0);
+        }
+        else if (subcounty.contains("Kibra")){
+            List<String> list_0 = Arrays.asList("Woodley","Sarangombe","Makina","Lindi","Laini Saba");
+            array_list_ward.addAll(list_0);
+        }
+        else if (subcounty.contains("Laikipia West")){
+            List<String> list_0 = Arrays.asList("Igwamiti ward","Kiirita Ward","Igwamiti ward","Laikipia West","Rumuruti Ward");
+            array_list_ward.addAll(list_0);
+        }
+        else if (subcounty.contains("Turkana West")){
+            List<String> list_0 = Arrays.asList("Kakuma Ward","Lopur Ward","Letea Ward","Songot Ward","Kalobeyei Ward","Lokichoggio Ward","Nanaam Ward");
+            array_list_ward.addAll(list_0);
+        }
+        ward_adapter.notifyDataSetChanged();
     }
 
     public void submitInfo(View view) {
@@ -195,7 +364,12 @@ public class YouthInSchoolActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(z.getWindowToken(), 0);
         }
 
-        IMAGE_UPLOAD_URL=compressImage(mCurrentPhotoPath);
+        File file=null;
+        if (mCurrentPhotoPath!=null && !mCurrentPhotoPath.isEmpty()){
+            IMAGE_UPLOAD_URL=compressImage(mCurrentPhotoPath);
+            file=new File(IMAGE_UPLOAD_URL);
+        }
+
 
 
 
@@ -205,14 +379,14 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         String names = inputNames.getText().toString().trim();
         String agent_no = inputAgentNo.getText().toString().trim();
         String age = inputAge.getText().toString().trim();
-        String ward = inputWard.getText().toString().trim();
-        String sub_county = inputSubCounty.getText().toString().trim();
-        String county = inputCounty.getText().toString().trim();
+        String ward = ward_spinner.getSelectedItem().toString();
+        String sub_county = subcounty_spinner.getSelectedItem().toString();
+        String county = county_spinner.getSelectedItem().toString();
         String school = inSchool ? inputSchool.getText().toString().trim() : "N/A";
         String form = inSchool ? inputForm.getText().toString().trim() : "N/A";
         maritalStatus = inSchool ? "N/A" : maritalStatus;
         //inputEduLevel,inputEduLevelCompletion
-        String highestLevel = inSchool ? "N/A" : inputEduLevel.getText().toString().trim();
+        String highestLevel = inSchool ? "N/A" : spinnerEduLevel.getSelectedItem().toString();
         String yearCompletion = inSchool ? "N/A" : inputEduLevelCompletion.getText().toString().trim();
 
 
@@ -220,11 +394,15 @@ public class YouthInSchoolActivity extends AppCompatActivity {
             Toast.makeText(this, "Fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
+        SharedPreferences prefs = this.getSharedPreferences("database", MODE_PRIVATE);
+        String user_id = prefs.getString("user_id", "0");
+
         this.progress.show();
-        File file=new File(IMAGE_UPLOAD_URL);
+
         AndroidNetworking.upload(Urls.SUBMIT_USER_INFO_URL)
                 .addMultipartFile("image", file)
                 .addMultipartParameter("names", names)
+                .addMultipartParameter("user_id", user_id)
                 .addMultipartParameter("agent_no", agent_no)
                 .addMultipartParameter("age", age)
                 .addMultipartParameter("ward", ward)
@@ -260,11 +438,11 @@ public class YouthInSchoolActivity extends AppCompatActivity {
                     @Override
                     public void onError(ANError anError) {
                         progress.dismiss();
-                       /* anError.printStackTrace();
+                        anError.printStackTrace();
                         Log.e(TAG, "onError: "+anError.getErrorBody() );
                         Log.e(TAG, "onError: "+anError.getErrorCode() );
                         Log.e(TAG, "onError: "+anError.getErrorDetail() );
-                        Log.e(TAG, "onError: "+anError.getLocalizedMessage() );*/
+                        Log.e(TAG, "onError: "+anError.getLocalizedMessage() );
                         Toast.makeText(YouthInSchoolActivity.this, "Failed To Send Data"+anError.getErrorBody(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -274,10 +452,14 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         inputNames.setText("");
         inputAgentNo.setText("");
         inputAge.setText("");
-        inputSubCounty.setText("");
-        inputCounty.setText("");
+        //inputSubCounty.setText("");
+        county_spinner.setSelection(0);
         inputSchool.setText("");
         inputForm.setText("");
+        radioGroupMaritalStatus.clearCheck();
+        radioGroupSchooling.clearCheck();
+        rgGender.clearCheck();
+        rgReligion.clearCheck();
     }
 
     public void fillQuestions(View view) {
@@ -495,4 +677,36 @@ public class YouthInSchoolActivity extends AppCompatActivity {
 
     }
 
+    public void allReports(View view) {
+        Intent startIntent=new Intent(getApplicationContext(),GeneratedReportsActivity.class);
+        startActivity(startIntent);
+    }
+
+    public void ceo_reports_1(View view) {
+        Intent startIntent=new Intent(getApplicationContext(),ShujaaYouthDataActivity.class);
+        startActivity(startIntent);
+    }
+
+    public void ceo_reports_2(View view) {
+
+        Intent startIntent=new Intent(getApplicationContext(),QuestionResponseActivity.class);
+        startActivity(startIntent);
+    }
+
+    public void out_school(View view) {
+        Intent startIntent=new Intent(getApplicationContext(),QuestionListResponsesActivity.class);
+        startIntent.putExtra("type","out");
+        startActivity(startIntent);
+    }
+
+    public void in_school(View view) {
+        Intent startIntent=new Intent(getApplicationContext(),QuestionListResponsesActivity.class);
+        startIntent.putExtra("type","in");
+        startActivity(startIntent);
+    }
+
+    public void contraceptive_reports(View view) {
+        Intent startIntent=new Intent(getApplicationContext(),ContraceptiveReportActivity.class);
+        startActivity(startIntent);
+    }
 }

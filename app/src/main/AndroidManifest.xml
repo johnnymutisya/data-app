@@ -3,19 +3,19 @@
     package="org.ichooselifeafrica.mydata">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/sealslogo"
-        android:label="MyData"
+        android:label="Shujaa Tracking"
         android:roundIcon="@mipmap/sealslogo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".LoginActivity"
-            android:label="MyData"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,15 +25,15 @@
         </activity>
         <activity
             android:name=".YouthInSchoolActivity"
-            android:label="Capture Change Agent Details"
+            android:label="Capture Shujaa Details/Reports"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".QuestionnaireActivity"
-            android:label="Capture Youth Data "
+            android:label="Questionnaire Items.Be Honest !!! "
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ReportsActivity"
-            android:label="View Youth Reports"
+            android:label="Search Each Youth Report"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
@@ -43,8 +43,42 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
+
+        <activity
+            android:name=".GeneratedReportsActivity"
+            android:label=" Shujaas Reports " />
+        />
+        <activity
+            android:name=".Reports.PerWardActivity"
+            android:label=" Total Shujaas Per Ward" />
+        <activity
+            android:name=".Reports.PerSchoolActivity"
+            android:label=" Total Shujaas Per School" />
+        <activity
+            android:name=".Reports.PerSubcountyActivity"
+            android:label=" Total Shujaas Per Subcounty" />
+        <activity
+            android:name=".Reports.PerCountyActivity"
+            android:label=" Total Shujaas Per County" />
+        <activity
+            android:name=".Reports.PerSealActivity"
+            android:label=" Shujaas Captured By Each Seal" />
+        <activity
+            android:name=".Reports.ByaAgeActivity"
+            android:label=" Captured Shujaas Per Age Bracket" />
+        <activity
+            android:name=".Reports.TotalCountiesActivity"
+            android:label=" Total Shujaas In The Country" />
+        <activity android:name=".Reports.ShujaaYouthDataActivity"
+            android:label=" List of All Shujaas Per Seal" />
+        <activity android:name=".Reports.QuestionResponseActivity"
+            android:label=" Questionnaire Items Responses" />
+        <activity android:name=".Reports.QuestionListResponsesActivity"
+            android:label=" Service Uptake Reports" />
+        <activity android:name=".Reports.ContraceptiveReportActivity"
+            android:label="Contraceptives Usage Report" ></activity>
     </application>
 
 </manifest>
