@@ -1,9 +1,12 @@
 package org.ichooselifeafrica.mydata.Reports;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,6 +15,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
+import org.ichooselifeafrica.mydata.LoginActivity;
 import org.ichooselifeafrica.mydata.R;
 import org.ichooselifeafrica.mydata.constants.Urls;
 import org.ichooselifeafrica.mydata.models.Item;
@@ -35,7 +39,7 @@ public class ContraceptiveReportActivity extends AppCompatActivity {
         txt_6=findViewById(R.id.txt_6);
         this.progress = new ProgressDialog(this);
         progress.setMessage("Processing....");
-        txtQuestion.setText("Is the Change Agent using a contraceptive method?1f yes, which contraceptive method is she/he using?");
+        txtQuestion.setText("Is the Shujaa using a contraceptive method?1f yes, which contraceptive method is she/he using?");
         fetch();
     }
 
@@ -97,5 +101,23 @@ public class ContraceptiveReportActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.logout_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (R.id.logout_btn == id) {
+            Intent x=new Intent(this, LoginActivity.class);
+            startActivity(x);
+            finish();
+        }
+        return true;
     }
 }

@@ -362,7 +362,7 @@
                 fancy:fb_focusColor="#9bd823"
                 fancy:fb_iconPosition="left"
                 fancy:fb_radius="1dp"
-                fancy:fb_text="Capture Biometric Facials(Mandatory!!)"
+                fancy:fb_text="Capture Biometric Facials(Optional)"
                 fancy:fb_textColor="#FFFFFF" />
 
             <mehdi.sakout.fancybuttons.FancyButton
@@ -406,10 +406,13 @@
 
 
             <mehdi.sakout.fancybuttons.FancyButton
+                android:visibility="gone"
+                android:id="@+id/btnShujaaResponses"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="@dimen/item_spacing"
+                android:onClick="getUserReports"
                 android:paddingBottom="10dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
@@ -420,7 +423,6 @@
                 fancy:fb_focusColor="#9bd823"
                 fancy:fb_iconPosition="left"
                 fancy:fb_radius="1dp"
-                android:onClick="getUserReports"
                 fancy:fb_text="View Each Shujaa Responses "
                 fancy:fb_textColor="#FFFFFF" />
 
@@ -491,6 +493,7 @@
 
 
             <mehdi.sakout.fancybuttons.FancyButton
+                android:visibility="gone"
                 android:id="@+id/clean_report"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -512,6 +515,7 @@
 
 
             <mehdi.sakout.fancybuttons.FancyButton
+                android:visibility="gone"
                 android:id="@+id/clean_report_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -532,10 +536,13 @@
                 fancy:fb_textColor="#FFFFFF" />
 
             <mehdi.sakout.fancybuttons.FancyButton
+                android:visibility="gone"
+                android:id="@+id/btn_contraceptive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="@dimen/item_spacing"
+                android:onClick="contraceptive_reports"
                 android:paddingBottom="10dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
@@ -546,7 +553,6 @@
                 fancy:fb_focusColor="#9bd823"
                 fancy:fb_iconPosition="left"
                 fancy:fb_radius="1dp"
-                android:onClick="contraceptive_reports"
                 fancy:fb_text="View Contraceptive Reports"
                 fancy:fb_textColor="#FFFFFF" />
 

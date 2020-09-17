@@ -25,6 +25,8 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -45,6 +47,7 @@ import org.ichooselifeafrica.mydata.Reports.QuestionListResponsesActivity;
 import org.ichooselifeafrica.mydata.Reports.QuestionResponseActivity;
 import org.ichooselifeafrica.mydata.Reports.ShujaaYouthDataActivity;
 import org.ichooselifeafrica.mydata.constants.Urls;
+import org.ichooselifeafrica.mydata.utils.AccessControl;
 import org.ichooselifeafrica.mydata.utils.ImageLoadingUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,6 +92,19 @@ public class YouthInSchoolActivity extends AppCompatActivity {
     ArrayAdapter subCounty_adapter, ward_adapter;
 
     TextView labelHighestLevel, labelYearOfCompletion;
+    int user_level=0;
+
+    //Report buttons
+    FancyButton btnShujaaResponses;
+    FancyButton btnUptakeInSchools;
+    FancyButton btnUptakeOutSchools;
+    FancyButton btnContraceptiveReports;
+
+    FancyButton btnMasterSealReports;
+    FancyButton btnShujaasCapturedByEachSeal;
+    FancyButton btnTotalServiceUptakePerItem;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +157,9 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         ward_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ward_spinner.setAdapter(ward_adapter);
 
+        //"regional manager" "master seal" "ordinary seal"
+
+
 
 
         county_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -151,7 +170,7 @@ public class YouthInSchoolActivity extends AppCompatActivity {
                 //populate the subscounty spinner
                 populateWards(sub_county);
                 array_list_subcounties.clear();
-                Toast.makeText(YouthInSchoolActivity.this, "Subcounty "+sub_county, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(YouthInSchoolActivity.this, "Subcounty "+sub_county, Toast.LENGTH_SHORT).show();
                 if (position==0){
                     List<String> list_0 = Arrays.asList(sub_county);
                     array_list_subcounties.addAll(list_0);
@@ -316,11 +335,38 @@ public class YouthInSchoolActivity extends AppCompatActivity {
         }
         SharedPreferences prefs = this.getSharedPreferences("database", MODE_PRIVATE);
         boolean authorized = prefs.getBoolean("authorized", false);
+        user_level = prefs.getInt("user_level", 4);
 
-        if (authorized){
-            allReportsBtn.setVisibility(View.VISIBLE);
-            ceo_reports_2.setVisibility(View.VISIBLE);
-            ceo_reports_1.setVisibility(View.VISIBLE);
+        btnShujaaResponses = findViewById(R.id.btnShujaaResponses); //"ordinary seal"
+        btnUptakeInSchools = findViewById(R.id.clean_report);// "ceo"
+        btnUptakeOutSchools = findViewById(R.id.clean_report_2);// "ceo"
+        btnContraceptiveReports = findViewById(R.id.btn_contraceptive);//ceo
+
+        btnMasterSealReports=findViewById(R.id.btn_all_reports);//master seal,"regional manager"
+        btnShujaasCapturedByEachSeal=findViewById(R.id.ceo_reports_1);//master seal,"regional manager"
+        btnTotalServiceUptakePerItem=findViewById(R.id.ceo_reports_2);//ceo
+
+
+        if (AccessControl.canSee(user_level,"ordinary seal")){
+            btnShujaaResponses.setVisibility(View.VISIBLE);
+        }
+        if (AccessControl.canSee(user_level,"ceo")){
+            btnUptakeInSchools.setVisibility(View.VISIBLE);
+        }
+        if (AccessControl.canSee(user_level,"ceo")){
+            btnUptakeOutSchools.setVisibility(View.VISIBLE);
+        }
+        if (AccessControl.canSee(user_level,"ceo")){
+            btnContraceptiveReports.setVisibility(View.VISIBLE);
+        }
+        if (AccessControl.canSee(user_level,"master seal regional manager")){
+            btnMasterSealReports.setVisibility(View.VISIBLE);
+        }
+        if (AccessControl.canSee(user_level,"master seal regional manager")){
+            btnShujaasCapturedByEachSeal.setVisibility(View.VISIBLE);
+        }
+        if (AccessControl.canSee(user_level,"ceo")){
+            btnTotalServiceUptakePerItem.setVisibility(View.VISIBLE);
         }
 
 
@@ -723,5 +769,24 @@ public class YouthInSchoolActivity extends AppCompatActivity {
     public void contraceptive_reports(View view) {
         Intent startIntent=new Intent(getApplicationContext(),ContraceptiveReportActivity.class);
         startActivity(startIntent);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.logout_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (R.id.logout_btn == id) {
+            Intent x=new Intent(this, LoginActivity.class);
+            startActivity(x);
+            finish();
+        }
+        return true;
     }
 }

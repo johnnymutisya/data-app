@@ -3,6 +3,8 @@ package org.ichooselifeafrica.mydata;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import org.ichooselifeafrica.mydata.Reports.ByaAgeActivity;
@@ -65,5 +67,24 @@ public class GeneratedReportsActivity extends AppCompatActivity {
         startActivity(x);
 
 
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.logout_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (R.id.logout_btn == id) {
+            Intent x=new Intent(this, LoginActivity.class);
+            startActivity(x);
+            finish();
+        }
+        return true;
     }
 }
